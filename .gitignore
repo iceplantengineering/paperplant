@@ -72,3 +72,12 @@ build/
 # Temporary folders
 tmp/
 temp/
+
+# Docker
+.dockerignore
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
