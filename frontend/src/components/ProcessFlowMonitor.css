@@ -1,0 +1,752 @@
+/* 製紙工場リアルタイム工程フロー監視画面 - 改良版デザイン */
+
+.process-flow-monitor {
+  padding: 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.process-flow-monitor h2 {
+  color: #2c3e50;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 300;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* ===== メインコンテナレイアウト ===== */
+.main-container {
+  display: flex;
+  height: calc(100vh - 80px);
+  gap: 0;
+}
+
+/* ===== 左サイドバー（制御室エリア） ===== */
+.control-sidebar {
+  width: 300px;
+  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 100;
+}
+
+.control-room-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.2);
+}
+
+.control-room-title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.control-room-icon {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+.control-room-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  margin: 0;
+}
+
+.control-metrics-section {
+  padding: 20px;
+  flex: 1;
+}
+
+.metrics-group {
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.metrics-group h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #ecf0f1;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.metric-label {
+  color: rgba(255,255,255,0.8);
+}
+
+.metric-value {
+  font-weight: 600;
+  color: #3498db;
+}
+
+.metric-value.good { color: #2ecc71; }
+.metric-value.warning { color: #f39c12; }
+.metric-value.critical { 
+  color: #e74c3c; 
+  animation: pulse-critical 2s infinite;
+}
+
+@keyframes pulse-critical {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ===== 中央工程エリア ===== */
+.factory-layout {
+  flex: 1;
+  background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.process-flow-container {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 30px;
+  padding: 40px;
+}
+
+/* ===== 原料エリア ===== */
+.raw-material-area {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.raw-material-container {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  width: 100%;
+  max-width: 220px;
+}
+
+.raw-material-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.raw-material-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 5px 0;
+}
+
+.raw-material-subtitle {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+.silo-group {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+}
+
+.silo {
+  flex: 1;
+  text-align: center;
+}
+
+.silo-container {
+  position: relative;
+  width: 50px;
+  height: 80px;
+  margin: 0 auto 8px;
+}
+
+.silo-vessel {
+  width: 100%;
+  height: 70px;
+  background: linear-gradient(135deg, #bdc3c7 0%, #ecf0f1 100%);
+  border: 2px solid #95a5a6;
+  border-radius: 8px 8px 25px 25px;
+  position: relative;
+  overflow: hidden;
+}
+
+.silo-level {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 0 0 20px 20px;
+  transition: all 0.5s ease;
+}
+
+.silo-level.wood-chips {
+  background: linear-gradient(0deg, #d35400 0%, #e67e22 100%);
+}
+
+.silo-level.recycled-paper {
+  background: linear-gradient(0deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.silo-icon {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #34495e;
+}
+
+.silo-label {
+  font-size: 11px;
+  color: #2c3e50;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.silo-percentage {
+  font-size: 10px;
+  color: #7f8c8d;
+  font-weight: 600;
+}
+
+/* ===== 工程ユニット共通スタイル ===== */
+.process-unit {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.process-unit::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  z-index: -1;
+  border-radius: 20px;
+}
+
+.process-unit:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 15px 15px rgba(0,0,0,0.25);
+}
+
+.process-unit.running {
+  border-color: #27ae60;
+  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2), 0 14px 28px rgba(0,0,0,0.25);
+}
+
+.process-unit.alarm {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.3), 0 14px 28px rgba(231, 76, 60, 0.4);
+  animation: alarm-pulse 2s infinite;
+}
+
+.process-unit.maintenance {
+  border-color: #f39c12;
+  box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2), 0 14px 28px rgba(0,0,0,0.25);
+}
+
+.process-unit.idle {
+  border-color: #95a5a6;
+  opacity: 0.7;
+}
+
+@keyframes alarm-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.3), 0 14px 28px rgba(231, 76, 60, 0.4);
+  }
+  50% { 
+    transform: scale(1.02);
+    box-shadow: 0 0 0 6px rgba(231, 76, 60, 0.5), 0 20px 40px rgba(231, 76, 60, 0.6);
+  }
+}
+
+/* ===== 工程ヘッダー ===== */
+.process-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.process-title-group {
+  display: flex;
+  align-items: center;
+}
+
+.process-icon {
+  font-size: 24px;
+  margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(52, 73, 94, 0.1);
+}
+
+.process-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.process-subtitle {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin: 2px 0 0 0;
+}
+
+.process-status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.process-status-indicator.running { background: #27ae60; }
+.process-status-indicator.alarm { background: #e74c3c; }
+.process-status-indicator.maintenance { background: #f39c12; }
+.process-status-indicator.idle { background: #95a5a6; }
+
+/* ===== 工程配置 ===== */
+.p1-area {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.p2-area {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.p3-area {
+  grid-column: 2 / 4;
+  grid-row: 2;
+}
+
+.p4-area {
+  grid-column: 4;
+  grid-row: 1 / 3;
+}
+
+/* ===== 工程ビジュアル（簡略化・モダン化） ===== */
+.process-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+  margin: 15px 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.equipment-icon {
+  font-size: 48px;
+  color: #6c757d;
+  z-index: 2;
+}
+
+.process-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(52, 152, 219, 0.1) 20%, 
+    rgba(52, 152, 219, 0.2) 50%, 
+    rgba(52, 152, 219, 0.1) 80%, 
+    transparent 100%
+  );
+  animation: process-flow 3s linear infinite;
+  z-index: 1;
+}
+
+.process-unit.running .process-animation {
+  animation-duration: 2s;
+}
+
+.process-unit.alarm .process-animation {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(231, 76, 60, 0.1) 20%, 
+    rgba(231, 76, 60, 0.3) 50%, 
+    rgba(231, 76, 60, 0.1) 80%, 
+    transparent 100%
+  );
+  animation-duration: 1s;
+}
+
+@keyframes process-flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ===== 工程メトリクス ===== */
+.process-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.metric {
+  text-align: center;
+  padding: 8px;
+  background: rgba(108, 117, 125, 0.05);
+  border-radius: 8px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #6c757d;
+  margin-bottom: 3px;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* ===== オペレーター情報 ===== */
+.operator-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  border-radius: 20px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.operator-icon {
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+/* ===== アラート表示 ===== */
+.alert-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  animation: bounce 2s infinite;
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-3px); }
+}
+
+/* ===== 詳細モーダル（改良版） ===== */
+.process-detail-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { 
+    transform: scale(0.9) translateY(50px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1) translateY(0); 
+    opacity: 1; 
+  }
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 25px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: 300;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.modal-title-icon {
+  font-size: 28px;
+  margin-right: 12px;
+}
+
+.modal-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  padding: 30px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.modal-metric-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modal-metric-title {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.modal-metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modal-metric-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.modal-metric-label {
+  font-size: 13px;
+  color: #495057;
+}
+
+.modal-metric-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* ===== フロー接続線（簡略化） ===== */
+.flow-connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.flow-line {
+  position: absolute;
+  background: linear-gradient(90deg, #3498db, #2ecc71);
+  height: 4px;
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.flow-line::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid #2ecc71;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+/* ===== レスポンシブデザイン ===== */
+@media (max-width: 1200px) {
+  .main-container {
+    flex-direction: column;
+  }
+  
+  .control-sidebar {
+    width: 100%;
+    height: 200px;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  
+  .control-metrics-section {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .metrics-group {
+    min-width: 200px;
+    margin-bottom: 0;
+  }
+  
+  .process-flow-container {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .raw-material-area {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  .p1-area {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  
+  .p2-area {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  
+  .p3-area {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  
+  .p4-area {
+    grid-column: 1 / 3;
+    grid-row: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .process-flow-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, 1fr);
+    padding: 15px;
+    gap: 15px;
+  }
+  
+  .raw-material-area,
+  .p1-area,
+  .p2-area,
+  .p3-area,
+  .p4-area {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .modal-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

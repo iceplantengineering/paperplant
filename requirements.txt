@@ -1,0 +1,19 @@
+# 製紙工場ダッシュボードアプリ - 依存関係
+
+# バックエンド (FastAPI)
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==2.0.23
+pydantic==2.5.0
+
+# データベース
+sqlite3  # Python標準ライブラリ
+
+# データ処理・生成
+pandas==2.1.3
+numpy==1.25.2
+faker==20.1.0
+
+# 開発・テスト用
+pytest==7.4.3
+httpx==0.25.2
