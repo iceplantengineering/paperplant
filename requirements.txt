@@ -7,7 +7,7 @@ sqlalchemy==2.0.23
 pydantic==2.5.0
 
 # データベース
-sqlite3  # Python標準ライブラリ
+# sqlite3 - Python標準ライブラリのため、インストール不要
 
 # データ処理・生成
 pandas==2.1.3
