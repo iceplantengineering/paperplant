@@ -1,0 +1,32 @@
+# 🏭 製紙工場DXダッシュボード - Netlify設定
+
+[build]
+  # ビルドコマンド（フロントエンドのみ）
+  command = "cd frontend && npm ci && npm run build"
+  
+  # 公開ディレクトリ
+  publish = "frontend/dist"
+  
+  # Node.jsバージョン
+  environment = { NODE_VERSION = "18" }
+
+# リダイレクト設定（SPAルーティング対応）
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# ヘッダー設定
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# 静的ファイルのキャッシュ設定
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -25,15 +25,25 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         
-    - name: 🧪 Run Python tests
+    - name: 🗄️ Initialize database
       run: |
-        # データベース初期化
         cd database
         python simple_data_generator.py
-        cd ..
-        # APIサーバーのヘルスチェック
+        
+    - name: 🧪 Validate Python imports
+      run: |
         cd backend
-        python -c "import main; print('FastAPI import successful')"
+        python -c "
+        try:
+            import main
+            from fastapi import FastAPI
+            import sqlalchemy
+            print('✅ All Python imports successful')
+            print('✅ FastAPI:', main.app.__class__.__name__)
+        except ImportError as e:
+            print('❌ Import error:', e)
+            exit(1)
+        "
 
   test-frontend:
     name: ⚛️ Frontend Tests (Node.js)
@@ -53,17 +63,29 @@ jobs:
     - name: 📦 Install Node.js dependencies
       run: |
         cd frontend
-        npm ci
+        npm ci --silent
+        
+    - name: 🔍 Validate TypeScript
+      run: |
+        cd frontend
+        npx tsc --noEmit --skipLibCheck
         
     - name: 🔧 Build frontend
       run: |
         cd frontend
         npm run build
         
-    - name: 🧪 Run frontend tests (if available)
+    - name: 📊 Verify build output
       run: |
         cd frontend
-        # npm test --if-present
+        if [ -d "dist" ]; then
+          echo "✅ Build successful - dist directory created"
+          echo "📁 Build contents:"
+          ls -la dist/
+        else
+          echo "❌ Build failed - no dist directory found"
+          exit 1
+        fi
 
   build-success:
     name: ✅ Build Success
