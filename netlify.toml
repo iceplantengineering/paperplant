@@ -2,7 +2,7 @@
 
 [build]
   # ビルドコマンド（フロントエンドのみ）
-  command = "cd frontend && npm install && npm run build"
+  command = "cd frontend && npm ci && npm run build:netlify"
   
   # 公開ディレクトリ
   publish = "frontend/dist"

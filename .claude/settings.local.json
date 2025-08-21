@@ -29,7 +29,8 @@
       "Bash(npm run dev:*)",
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(npx tsc:*)"
     ],
     "deny": []
   }
