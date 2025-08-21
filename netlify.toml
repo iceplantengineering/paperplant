@@ -9,26 +9,20 @@
   
   # Functions ディレクトリ
   functions = "netlify/functions"
-  
-  # 環境変数
-  environment = { 
-    NODE_VERSION = "18",
-    SKIP_INSTALL_DEPS = "true"
-  }
-
-# Pythonビルドを無効化
-[build.processing]
-  skip_processing = false
 
 # 環境変数
-[context.production]
-  environment = { NODE_ENV = "production" }
+[build.environment]
+  NODE_VERSION = "18"
+  NODE_ENV = "production"
 
-[context.deploy-preview]
-  environment = { NODE_ENV = "development" }
+[context.production.environment]
+  NODE_ENV = "production"
 
-[context.branch-deploy]
-  environment = { NODE_ENV = "development" }
+[context.deploy-preview.environment]
+  NODE_ENV = "development"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
 
 # リダイレクト設定（SPAルーティング対応）
 [[redirects]]
