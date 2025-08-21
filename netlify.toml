@@ -1,14 +1,17 @@
 # 🏭 製紙工場DXダッシュボード - Netlify設定
 
 [build]
-  # ビルドコマンド（フロントエンドのみ）
-  command = "cd frontend && npm ci && npm run build:netlify"
+  # ベースディレクトリをfrontendに設定
+  base = "frontend"
   
-  # 公開ディレクトリ
-  publish = "frontend/dist"
+  # ビルドコマンド（frontendディレクトリ内で実行）
+  command = "npm install && npm run build:netlify"
   
-  # Functions ディレクトリ
-  functions = "netlify/functions"
+  # 公開ディレクトリ（ベースディレクトリからの相対パス）
+  publish = "dist"
+  
+  # Functions ディレクトリ（ルートからの相対パス）
+  functions = "../netlify/functions"
 
 # 環境変数
 [build.environment]

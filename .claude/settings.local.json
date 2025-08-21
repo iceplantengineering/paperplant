@@ -30,7 +30,8 @@
       "Bash(npm run build:*)",
       "Bash(npm install:*)",
       "Bash(mv:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
