@@ -500,6 +500,42 @@ npm run dev
 ```
 
 ### 本番環境デプロイ
+
+#### Netlifyデプロイ（推奨）
+
+```bash
+# 1. GitHubにプッシュ
+git add .
+git commit -m "feat: Netlify対応でServerless Functions実装"
+git push origin main
+
+# 2. Netlifyでプロジェクトをインポート
+# - Build command: cd frontend && npm install && npm run build
+# - Publish directory: frontend/dist
+# - Functions directory: netlify/functions
+
+# 3. 環境変数設定（不要）
+# - NODE_ENV=production （自動設定）
+```
+
+#### Netlify CLI使用の場合
+
+```bash
+# Netlify CLIインストール
+npm install -g netlify-cli
+
+# ログイン
+netlify login
+
+# デプロイプレビュー
+npm run deploy:preview
+
+# 本番デプロイ
+npm run deploy
+```
+
+#### 従来の手動デプロイ
+
 ```bash
 # フロントエンドビルド
 npm run build
@@ -507,6 +543,13 @@ npm run build
 # バックエンド本番起動
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
+
+### デプロイメント仕様
+
+- **静的ホスティング**: Netlify
+- **API**: Netlify Functions (Serverless)
+- **データベース**: モックデータ（本番ではPlanetScale等推奨）
+- **環境対応**: 開発時ローカルAPI、本番時Functions自動切替
 
 ---
 

@@ -2,13 +2,26 @@
 
 [build]
   # ビルドコマンド（フロントエンドのみ）
-  command = "cd frontend && npm ci && npm run build"
+  command = "cd frontend && npm install && npm run build"
   
   # 公開ディレクトリ
   publish = "frontend/dist"
   
+  # Functions ディレクトリ
+  functions = "netlify/functions"
+  
   # Node.jsバージョン
   environment = { NODE_VERSION = "18" }
+
+# 環境変数
+[context.production]
+  environment = { NODE_ENV = "production" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "development" }
+
+[context.branch-deploy]
+  environment = { NODE_ENV = "development" }
 
 # リダイレクト設定（SPAルーティング対応）
 [[redirects]]

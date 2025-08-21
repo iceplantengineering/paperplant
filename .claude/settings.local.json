@@ -13,7 +13,22 @@
       "Bash(git remote add:*)",
       "Bash(git push:*)",
       "Bash(git add:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(cmd:*)",
+      "Bash(python:*)",
+      "Bash(call venvScriptsactivate.bat)",
+      "Bash(pip install:*)",
+      "Bash(venvScriptspip install fastapi uvicorn sqlalchemy pandas numpy faker pytest httpx)",
+      "Bash(./venv/Scripts/pip install fastapi uvicorn sqlalchemy pandas numpy faker pytest httpx)",
+      "Bash(npm install)",
+      "Bash(call ..venvScriptsactivate.bat)",
+      "Bash(..venvScriptspython models.py)",
+      "Bash(../venv/Scripts/python models.py)",
+      "Bash(../venv/Scripts/python data_generator.py)",
+      "Bash(../venv/Scripts/python:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)"
     ],
     "deny": []
   }

@@ -17,6 +17,7 @@
     "build": "npm run build:frontend",
     "build:frontend": "cd frontend && npm run build",
     "build:check": "cd frontend && npm run build && echo 'Build completed successfully'",
+    "build:netlify": "cd frontend && npm install && npm run build",
     "start": "npm run start:parallel",
     "start:parallel": "concurrently --prefix=\"[{name}]\" --names=\"backend,frontend\" \"npm run start:backend\" \"npm run start:frontend\"",
     "start:frontend": "cd frontend && npm run preview",
@@ -24,6 +25,8 @@
     "setup:database": "cd database && python simple_data_generator.py",
     "setup:full": "npm run install:all && npm run setup:database",
     "test": "echo 'No tests specified yet'",
+    "deploy": "echo 'Deploying to Netlify...' && netlify deploy --prod",
+    "deploy:preview": "echo 'Creating deploy preview...' && netlify deploy",
     "clean": "npm run clean:frontend && npm run clean:backend",
     "clean:frontend": "cd frontend && rm -rf dist node_modules",
     "clean:backend": "find . -type d -name '__pycache__' -exec rm -rf {} + && find . -name '*.pyc' -delete"
