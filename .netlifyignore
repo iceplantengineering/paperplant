@@ -1,0 +1,55 @@
+# Netlify無視ファイル - フロントエンドのみデプロイ
+
+# Python関連ファイルを無視
+requirements.txt
+*.py
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+.env
+backend/
+database/
+
+# その他の開発ファイル
+.git/
+.gitignore
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# ドキュメント（README以外）
+docs/
+*.md
+!README.md
+
+# Docker関連
+Dockerfile
+docker-compose.yml
+*.dockerfile
+
+# IDE設定
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Windows
+*.lnk
+desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# 開発スクリプト
+*.bat
+*.sh
+install_dependencies.*
+start.*

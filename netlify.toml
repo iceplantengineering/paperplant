@@ -10,8 +10,15 @@
   # Functions ディレクトリ
   functions = "netlify/functions"
   
-  # Node.jsバージョン
-  environment = { NODE_VERSION = "18" }
+  # 環境変数
+  environment = { 
+    NODE_VERSION = "18",
+    SKIP_INSTALL_DEPS = "true"
+  }
+
+# Pythonビルドを無効化
+[build.processing]
+  skip_processing = false
 
 # 環境変数
 [context.production]
