@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
+import { useLanguage } from '../contexts/LanguageContext';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -40,17 +41,18 @@ interface MachineStatus {
 }
 
 const ProcessMonitoring: React.FC = () => {
+  const { t } = useLanguage();
   const [selectedProcess, setSelectedProcess] = useState('P3');
   const [qualityData, setQualityData] = useState<QualityData[]>([]);
   const [machineStatus, setMachineStatus] = useState<MachineStatus[]>([]);
   const [timeRange, setTimeRange] = useState(24);
   const [loading, setLoading] = useState(false);
 
-  const processOptions = [
-    { value: 'P1', label: 'P1: パルプ化工程' },
-    { value: 'P2', label: 'P2: 調成工程' },
-    { value: 'P3', label: 'P3: 抄紙工程' },
-    { value: 'P4', label: 'P4: 仕上げ工程' }
+  const getProcessOptions = () => [
+    { value: 'P1', label: t('process.p1') },
+    { value: 'P2', label: t('process.p2') },
+    { value: 'P3', label: t('process.p3') },
+    { value: 'P4', label: t('process.p4') }
   ];
 
   useEffect(() => {
@@ -153,23 +155,38 @@ const ProcessMonitoring: React.FC = () => {
   };
 
   const getProcessParameters = (processCode: string) => {
+    const getParamLabel = (paramName: string) => {
+      const labelMap: { [key: string]: string } = {
+        'kappa_number': t('quality.param.kappa'),
+        'brightness': t('quality.param.brightness'),
+        'freeness_csf': t('quality.param.freeness'),
+        'consistency': t('quality.param.consistency'),
+        'basis_weight': t('quality.param.basisWeight'),
+        'moisture_content': t('quality.param.moisture'),
+        'caliper': t('quality.param.caliper'),
+        'smoothness': t('quality.param.smoothness'),
+        'tensile_strength': t('quality.param.tensile')
+      };
+      return labelMap[paramName] || paramName;
+    };
+
     const paramMap = {
       P1: [
-        { name: 'kappa_number', target: 15.0, tolerance: 2.0, unit: '', label: 'カッパー価' },
-        { name: 'brightness', target: 85.0, tolerance: 3.0, unit: '%', label: '白色度' }
+        { name: 'kappa_number', target: 15.0, tolerance: 2.0, unit: '', label: getParamLabel('kappa_number') },
+        { name: 'brightness', target: 85.0, tolerance: 3.0, unit: '%', label: getParamLabel('brightness') }
       ],
       P2: [
-        { name: 'freeness_csf', target: 450.0, tolerance: 50.0, unit: 'ml', label: 'フリーネス' },
-        { name: 'consistency', target: 3.5, tolerance: 0.3, unit: '%', label: 'パルプ濃度' }
+        { name: 'freeness_csf', target: 450.0, tolerance: 50.0, unit: 'ml', label: getParamLabel('freeness_csf') },
+        { name: 'consistency', target: 3.5, tolerance: 0.3, unit: '%', label: getParamLabel('consistency') }
       ],
       P3: [
-        { name: 'basis_weight', target: 80.0, tolerance: 2.0, unit: 'g/m²', label: '坪量' },
-        { name: 'moisture_content', target: 5.0, tolerance: 0.5, unit: '%', label: '水分率' },
-        { name: 'caliper', target: 0.12, tolerance: 0.01, unit: 'mm', label: '紙厚' }
+        { name: 'basis_weight', target: 80.0, tolerance: 2.0, unit: 'g/m²', label: getParamLabel('basis_weight') },
+        { name: 'moisture_content', target: 5.0, tolerance: 0.5, unit: '%', label: getParamLabel('moisture_content') },
+        { name: 'caliper', target: 0.12, tolerance: 0.01, unit: 'mm', label: getParamLabel('caliper') }
       ],
       P4: [
-        { name: 'smoothness', target: 150.0, tolerance: 20.0, unit: 'ml/min', label: '平滑度' },
-        { name: 'tensile_strength', target: 120.0, tolerance: 15.0, unit: 'N*m/g', label: '引張強度' }
+        { name: 'smoothness', target: 150.0, tolerance: 20.0, unit: 'ml/min', label: getParamLabel('smoothness') },
+        { name: 'tensile_strength', target: 120.0, tolerance: 15.0, unit: 'N*m/g', label: getParamLabel('tensile_strength') }
       ]
     };
     
@@ -216,7 +233,7 @@ const ProcessMonitoring: React.FC = () => {
           pointHoverRadius: 5
         },
         {
-          label: '目標値',
+          label: t('chart.target'),
           data: paramData.map(d => d.target),
           borderColor: 'rgb(76, 175, 80)',
           backgroundColor: 'transparent',
@@ -225,7 +242,7 @@ const ProcessMonitoring: React.FC = () => {
           pointRadius: 0
         },
         {
-          label: '上限',
+          label: t('language') === 'ja' ? '上限' : 'Upper Limit',
           data: paramData.map(d => d.upper_limit),
           borderColor: 'rgb(244, 67, 54)',
           backgroundColor: 'transparent',
@@ -234,7 +251,7 @@ const ProcessMonitoring: React.FC = () => {
           pointRadius: 0
         },
         {
-          label: '下限',
+          label: t('language') === 'ja' ? '下限' : 'Lower Limit',
           data: paramData.map(d => d.lower_limit),
           borderColor: 'rgb(244, 67, 54)',
           backgroundColor: 'transparent',
@@ -247,7 +264,7 @@ const ProcessMonitoring: React.FC = () => {
 
     return (
       <div key={parameter} className="card">
-        <h3>{paramInfo?.label || parameter} トレンド</h3>
+        <h3>{paramInfo?.label || parameter} {t('process.monitoring.trend')}</h3>
         <div className="chart-container chart-small">
           <Line
             data={chartData}
@@ -274,7 +291,7 @@ const ProcessMonitoring: React.FC = () => {
               },
               scales: {
                 x: {
-                  title: { display: true, text: '時刻' }
+                  title: { display: true, text: t('process.monitoring.time') }
                 },
                 y: {
                   title: { display: true, text: `${paramInfo?.label || parameter} (${paramInfo?.unit || ''})` }
@@ -287,13 +304,13 @@ const ProcessMonitoring: React.FC = () => {
         {/* 品質状況サマリー */}
         <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'space-around', fontSize: '14px' }}>
           <div>
-            <strong>最新値:</strong> {paramData[paramData.length - 1]?.value.toFixed(2)} {paramInfo?.unit}
+            <strong>{t('process.monitoring.latest')}:</strong> {paramData[paramData.length - 1]?.value.toFixed(2)} {paramInfo?.unit}
           </div>
           <div>
-            <strong>規格内率:</strong> {((paramData.filter(d => d.is_ok).length / paramData.length) * 100).toFixed(1)}%
+            <strong>{t('process.monitoring.withinSpec')}:</strong> {((paramData.filter(d => d.is_ok).length / paramData.length) * 100).toFixed(1)}%
           </div>
           <div>
-            <strong>標準偏差:</strong> {calculateStandardDeviation(paramData.map(d => d.value)).toFixed(3)}
+            <strong>{t('process.monitoring.stdDev')}:</strong> {calculateStandardDeviation(paramData.map(d => d.value)).toFixed(3)}
           </div>
         </div>
       </div>
@@ -321,19 +338,19 @@ const ProcessMonitoring: React.FC = () => {
   return (
     <div>
       <h1 style={{ marginBottom: '30px', color: '#1e3c72' }}>
-        ⚙️ 工程別モニタリングダッシュボード
+{t('process.monitoring.title')}
       </h1>
 
       {/* 工程選択とオプション */}
       <div className="card">
         <div className="search-form">
           <div className="form-group">
-            <label>監視対象工程</label>
+            <label>{t('process.monitoring.target')}</label>
             <select 
               value={selectedProcess} 
               onChange={(e) => setSelectedProcess(e.target.value)}
             >
-              {processOptions.map(option => (
+              {getProcessOptions().map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -342,22 +359,22 @@ const ProcessMonitoring: React.FC = () => {
           </div>
           
           <div className="form-group">
-            <label>表示時間範囲</label>
+            <label>{t('process.monitoring.timeRange')}</label>
             <select 
               value={timeRange} 
               onChange={(e) => setTimeRange(Number(e.target.value))}
             >
-              <option value={1}>過去1時間</option>
-              <option value={4}>過去4時間</option>
-              <option value={12}>過去12時間</option>
-              <option value={24}>過去24時間</option>
+              <option value={1}>{t('time.range.1h')}</option>
+              <option value={4}>{t('time.range.4h')}</option>
+              <option value={12}>{t('time.range.12h')}</option>
+              <option value={24}>{t('time.range.24h')}</option>
             </select>
           </div>
           
           <div className="form-group">
             <label>&nbsp;</label>
             <button className="btn btn-primary" onClick={refreshData}>
-              🔄 データ更新
+              🔄 {t('process.monitoring.refresh')}
             </button>
           </div>
         </div>
@@ -365,7 +382,7 @@ const ProcessMonitoring: React.FC = () => {
 
       {/* 設備ステータス */}
       <div className="card">
-        <h2>🔧 設備ステータス</h2>
+        <h2>{t('process.monitoring.equipment')}</h2>
         <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
           {machineStatus.map(machine => {
             const statusInfo = getMachineStatusIcon(machine.status, machine.alert_level);
@@ -405,11 +422,11 @@ const ProcessMonitoring: React.FC = () => {
       {/* 品質パラメータトレンドチャート */}
       {qualityData.length === 0 ? (
         <div className="card">
-          <h2>⚠️ データ読み込み中</h2>
+          <h2>{t('process.monitoring.loading')}</h2>
           <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-            品質パラメータデータを読み込んでいます...
+            {t('process.monitoring.loadingText')}
             <br />
-            <small>工程: {selectedProcess}, 時間範囲: {timeRange}時間</small>
+            <small>{t('language') === 'ja' ? `工程: ${selectedProcess}, 時間範囲: ${timeRange}時間` : `Process: ${selectedProcess}, Time Range: ${timeRange} hours`}</small>
           </p>
           <div className="loading">
             <div className="spinner"></div>
@@ -418,9 +435,9 @@ const ProcessMonitoring: React.FC = () => {
       ) : (
         <>
           <div className="card">
-            <h2>📊 品質パラメータトレンドチャート</h2>
+            <h2>{t('process.monitoring.quality')}</h2>
             <p style={{ color: '#666', marginBottom: '20px' }}>
-              {selectedProcess}工程の品質パラメータ（過去{timeRange}時間、{qualityData.length}データポイント）
+              {t('language') === 'ja' ? `${selectedProcess}工程の品質パラメータ（過去${timeRange}時間、${qualityData.length}データポイント）` : `Quality parameters for ${selectedProcess} process (past ${timeRange} hours, ${qualityData.length} ${t('process.monitoring.dataPoints')})`}
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
@@ -434,9 +451,9 @@ const ProcessMonitoring: React.FC = () => {
       {/* CDプロファイル表示（抄紙工程のみ） */}
       {selectedProcess === 'P3' && (
         <div className="card">
-          <h2>📊 幅方向品質プロファイル (CD Profile)</h2>
+          <h2>{t('process.monitoring.cdProfile')}</h2>
           <p style={{ color: '#666', marginBottom: '20px' }}>
-            紙の幅方向（Cross Direction）における品質の均一性を表示
+            {t('process.monitoring.cdDescription')}
           </p>
           
           {['basis_weight', 'moisture_content'].map(param => {
@@ -462,7 +479,7 @@ const ProcessMonitoring: React.FC = () => {
             
             return (
               <div key={param} style={{ marginBottom: '30px' }}>
-                <h3>{paramInfo?.label || param} プロファイル</h3>
+                <h3>{paramInfo?.label || param} {t('process.monitoring.profile')}</h3>
                 <div className="chart-container chart-small">
                   <Line 
                     data={profileChartData}
@@ -470,7 +487,7 @@ const ProcessMonitoring: React.FC = () => {
                       responsive: true,
                       maintainAspectRatio: false,
                       scales: {
-                        x: { title: { display: true, text: '紙幅位置' } },
+                        x: { title: { display: true, text: t('language') === 'ja' ? '紙幅位置' : 'Paper Width Position' } },
                         y: { title: { display: true, text: `${paramInfo?.label || param} (${paramInfo?.unit || ''})` } }
                       }
                     }}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProcessFlowMonitor.css';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ProcessStatus {
   [key: string]: {
@@ -14,6 +15,7 @@ interface ProcessStatus {
 }
 
 const ProcessFlowMonitor: React.FC = () => {
+  const { t } = useLanguage();
   const [processStatus, setProcessStatus] = useState<ProcessStatus>({});
   const [selectedProcess, setSelectedProcess] = useState<string>('');
   const [controlMetrics, setControlMetrics] = useState<any>({});
@@ -117,10 +119,22 @@ const ProcessFlowMonitor: React.FC = () => {
 
   const getProcessTitle = (code: string) => {
     const titles = {
-      P1: { title: 'パルプ化工程', subtitle: '蒸解・洗浄・漂白' },
-      P2: { title: '調成工程', subtitle: '叩解・薬品添加' },
-      P3: { title: '抄紙工程', subtitle: 'シート形成・プレス・乾燥' },
-      P4: { title: '仕上げ工程', subtitle: 'カレンダー・巻取・断裁' }
+      P1: { 
+        title: t('language') === 'ja' ? 'パルプ化工程' : 'Pulping Process', 
+        subtitle: t('language') === 'ja' ? '蒸解・洗浄・漂白' : 'Digesting, Washing, Bleaching' 
+      },
+      P2: { 
+        title: t('language') === 'ja' ? '調成工程' : 'Stock Preparation', 
+        subtitle: t('language') === 'ja' ? '叩解・薬品添加' : 'Refining, Chemical Addition' 
+      },
+      P3: { 
+        title: t('language') === 'ja' ? '抄紙工程' : 'Paper Making', 
+        subtitle: t('language') === 'ja' ? 'シート形成・プレス・乾燥' : 'Sheet Forming, Press, Drying' 
+      },
+      P4: { 
+        title: t('language') === 'ja' ? '仕上げ工程' : 'Finishing Process', 
+        subtitle: t('language') === 'ja' ? 'カレンダー・巻取・断裁' : 'Calendering, Winding, Cutting' 
+      }
     };
     return titles[code as keyof typeof titles] || { title: code, subtitle: '' };
   };
@@ -159,11 +173,11 @@ const ProcessFlowMonitor: React.FC = () => {
 
         <div className="process-metrics">
           <div className="metric">
-            <div className="metric-label">温度</div>
+            <div className="metric-label">{t('processFlow.temperature')}</div>
             <div className="metric-value">{data.temperature}°C</div>
           </div>
           <div className="metric">
-            <div className="metric-label">圧力</div>
+            <div className="metric-label">{t('processFlow.pressure')}</div>
             <div className="metric-value">{data.pressure} MPa</div>
           </div>
         </div>
@@ -188,9 +202,9 @@ const ProcessFlowMonitor: React.FC = () => {
           <div className="modal-header">
             <h2 className="modal-title">
               <span className="modal-title-icon">{getEquipmentIcon(selectedProcess)}</span>
-              {processInfo.title} - 詳細情報
+              {processInfo.title} - {t('processFlow.details')}
             </h2>
-            <button className="modal-close-btn" onClick={closeProcessDetail}>
+            <button className="modal-close-btn" onClick={closeProcessDetail} title={t('processFlow.close')}>
               ×
             </button>
           </div>
@@ -198,38 +212,38 @@ const ProcessFlowMonitor: React.FC = () => {
           <div className="modal-body">
             <div className="modal-metrics-grid">
               <div className="modal-metric-card">
-                <h4 className="modal-metric-title">運転パラメータ</h4>
+                <h4 className="modal-metric-title">{t('processFlow.parameters')}</h4>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">稼働状況</span>
+                  <span className="modal-metric-label">{t('language') === 'ja' ? '稼働状況' : 'Operating Status'}</span>
                   <span className={`modal-metric-value ${data.status}`}>
-                    {data.status === 'running' ? '稼働中' : 
-                     data.status === 'alarm' ? 'アラート' : '停止中'}
+                    {data.status === 'running' ? (t('language') === 'ja' ? '稼働中' : 'Running') : 
+                     data.status === 'alarm' ? (t('language') === 'ja' ? 'アラート' : 'Alert') : (t('language') === 'ja' ? '停止中' : 'Stopped')}
                   </span>
                 </div>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">温度</span>
+                  <span className="modal-metric-label">{t('processFlow.temperature')}</span>
                   <span className="modal-metric-value">{data.temperature}°C</span>
                 </div>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">圧力</span>
+                  <span className="modal-metric-label">{t('processFlow.pressure')}</span>
                   <span className="modal-metric-value">{data.pressure} MPa</span>
                 </div>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">流量</span>
+                  <span className="modal-metric-label">{t('processFlow.flowRate')}</span>
                   <span className="modal-metric-value">{data.flow_rate} L/min</span>
                 </div>
               </div>
 
               <div className="modal-metric-card">
-                <h4 className="modal-metric-title">品質指標</h4>
+                <h4 className="modal-metric-title">{t('processFlow.qualityIndicators')}</h4>
                 {selectedProcess === 'P1' && (
                   <>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">カッパー価</span>
+                      <span className="modal-metric-label">{t('quality.param.kappa')}</span>
                       <span className="modal-metric-value">{(data as any).kappa_number}</span>
                     </div>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">白色度</span>
+                      <span className="modal-metric-label">{t('quality.param.brightness')}</span>
                       <span className="modal-metric-value">{(data as any).brightness}%</span>
                     </div>
                   </>
@@ -237,11 +251,11 @@ const ProcessFlowMonitor: React.FC = () => {
                 {selectedProcess === 'P2' && (
                   <>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">パルプ濃度</span>
+                      <span className="modal-metric-label">{t('quality.param.consistency')}</span>
                       <span className="modal-metric-value">{(data as any).consistency}%</span>
                     </div>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">pH値</span>
+                      <span className="modal-metric-label">{t('language') === 'ja' ? 'pH値' : 'pH Value'}</span>
                       <span className="modal-metric-value">{(data as any).ph}</span>
                     </div>
                   </>
@@ -249,15 +263,15 @@ const ProcessFlowMonitor: React.FC = () => {
                 {selectedProcess === 'P3' && (
                   <>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">坪量</span>
+                      <span className="modal-metric-label">{t('quality.param.basisWeight')}</span>
                       <span className="modal-metric-value">{(data as any).basis_weight} g/m²</span>
                     </div>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">水分率</span>
+                      <span className="modal-metric-label">{t('quality.param.moisture')}</span>
                       <span className="modal-metric-value">{(data as any).moisture}%</span>
                     </div>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">マシン速度</span>
+                      <span className="modal-metric-label">{t('language') === 'ja' ? 'マシン速度' : 'Machine Speed'}</span>
                       <span className="modal-metric-value">{(data as any).speed} m/min</span>
                     </div>
                   </>
@@ -265,31 +279,31 @@ const ProcessFlowMonitor: React.FC = () => {
                 {selectedProcess === 'P4' && (
                   <>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">平滑度</span>
+                      <span className="modal-metric-label">{t('quality.param.smoothness')}</span>
                       <span className="modal-metric-value">{(data as any).smoothness} ml/min</span>
                     </div>
                     <div className="modal-metric-item">
-                      <span className="modal-metric-label">完成ロール数</span>
-                      <span className="modal-metric-value">{(data as any).rolls} 本</span>
+                      <span className="modal-metric-label">{t('language') === 'ja' ? '完成ロール数' : 'Finished Rolls'}</span>
+                      <span className="modal-metric-value">{(data as any).rolls} {t('processFlow.units.rolls')}</span>
                     </div>
                   </>
                 )}
               </div>
 
               <div className="modal-metric-card">
-                <h4 className="modal-metric-title">作業者情報</h4>
+                <h4 className="modal-metric-title">{t('processFlow.operatorInfo')}</h4>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">担当オペレーター</span>
+                  <span className="modal-metric-label">{t('processFlow.operator')}</span>
                   <span className="modal-metric-value">{data.operator}</span>
                 </div>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">アクティブバッチ</span>
-                  <span className="modal-metric-value">{data.active_batches} 個</span>
+                  <span className="modal-metric-label">{t('processFlow.activeBatches')}</span>
+                  <span className="modal-metric-value">{data.active_batches} {t('processFlow.units.pieces')}</span>
                 </div>
                 <div className="modal-metric-item">
-                  <span className="modal-metric-label">今日のアラート</span>
+                  <span className="modal-metric-label">{t('processFlow.todayAlerts')}</span>
                   <span className={`modal-metric-value ${data.recent_alerts > 0 ? 'critical' : 'good'}`}>
-                    {data.recent_alerts} 件
+                    {data.recent_alerts} {t('processFlow.units.cases')}
                   </span>
                 </div>
               </div>
@@ -302,7 +316,7 @@ const ProcessFlowMonitor: React.FC = () => {
 
   return (
     <div className="process-flow-monitor">
-      <h2>🏭 製紙工場リアルタイム工程フロー監視</h2>
+      <h2>{t('processFlow.title')}</h2>
       
       <div className="main-container">
         {/* 左サイドバー - 制御室 */}
@@ -310,52 +324,52 @@ const ProcessFlowMonitor: React.FC = () => {
           <div className="control-room-header">
             <div className="control-room-title">
               <span className="control-room-icon">🖥️</span>
-              中央制御室
+              {t('processFlow.controlRoom')}
             </div>
-            <p className="control-room-subtitle">統合監視システム</p>
+            <p className="control-room-subtitle">{t('processFlow.monitoring')}</p>
           </div>
           
           <div className="control-metrics-section">
             <div className="metrics-group">
-              <h4>生産実績</h4>
+              <h4>{t('processFlow.production')}</h4>
               <div className="metric-row">
-                <span className="metric-label">本日生産量:</span>
+                <span className="metric-label">{t('processFlow.todayProduction')}:</span>
                 <span className="metric-value good">{controlMetrics.totalProduction} t</span>
               </div>
               <div className="metric-row">
-                <span className="metric-label">稼働効率:</span>
+                <span className="metric-label">{t('processFlow.efficiency')}:</span>
                 <span className="metric-value good">{controlMetrics.efficiency}%</span>
               </div>
               <div className="metric-row">
-                <span className="metric-label">品質達成率:</span>
+                <span className="metric-label">{t('processFlow.qualityRate')}:</span>
                 <span className="metric-value good">{controlMetrics.qualityRate}%</span>
               </div>
             </div>
 
             <div className="metrics-group">
-              <h4>エネルギー</h4>
+              <h4>{t('processFlow.energy')}</h4>
               <div className="metric-row">
-                <span className="metric-label">消費電力:</span>
+                <span className="metric-label">{t('processFlow.powerConsumption')}:</span>
                 <span className="metric-value warning">{controlMetrics.energyConsumption} kW</span>
               </div>
               <div className="metric-row">
-                <span className="metric-label">原単位:</span>
+                <span className="metric-label">{t('processFlow.unitCost')}:</span>
                 <span className="metric-value">4.5 GJ/t</span>
               </div>
             </div>
 
             <div className="metrics-group">
-              <h4>アラート状況</h4>
+              <h4>{t('processFlow.alertStatus')}</h4>
               <div className="metric-row">
-                <span className="metric-label">重要:</span>
+                <span className="metric-label">{t('processFlow.critical')}:</span>
                 <span className="metric-value critical">{controlMetrics.alerts?.critical} 件</span>
               </div>
               <div className="metric-row">
-                <span className="metric-label">警告:</span>
+                <span className="metric-label">{t('processFlow.warning')}:</span>
                 <span className="metric-value warning">{controlMetrics.alerts?.warning} 件</span>
               </div>
               <div className="metric-row">
-                <span className="metric-label">情報:</span>
+                <span className="metric-label">{t('processFlow.info')}:</span>
                 <span className="metric-value">{controlMetrics.alerts?.info} 件</span>
               </div>
             </div>
@@ -369,8 +383,8 @@ const ProcessFlowMonitor: React.FC = () => {
             <div className="raw-material-area">
               <div className="raw-material-container">
                 <div className="raw-material-header">
-                  <h3 className="raw-material-title">原料供給</h3>
-                  <p className="raw-material-subtitle">Raw Materials</p>
+                  <h3 className="raw-material-title">{t('language') === 'ja' ? '原料供給' : 'Raw Material Supply'}</h3>
+                  <p className="raw-material-subtitle">{t('language') === 'ja' ? 'Raw Materials' : '原料類'}</p>
                 </div>
                 
                 <div className="silo-group">
@@ -381,7 +395,7 @@ const ProcessFlowMonitor: React.FC = () => {
                         <div className="silo-level wood-chips" style={{height: '75%'}}></div>
                       </div>
                     </div>
-                    <div className="silo-label">木材チップ</div>
+                    <div className="silo-label">{t('language') === 'ja' ? '木材チップ' : 'Wood Chips'}</div>
                     <div className="silo-percentage">75%</div>
                   </div>
                   
@@ -392,7 +406,7 @@ const ProcessFlowMonitor: React.FC = () => {
                         <div className="silo-level recycled-paper" style={{height: '45%'}}></div>
                       </div>
                     </div>
-                    <div className="silo-label">古紙</div>
+                    <div className="silo-label">{t('language') === 'ja' ? '古紙' : 'Recycled Paper'}</div>
                     <div className="silo-percentage">45%</div>
                   </div>
                 </div>

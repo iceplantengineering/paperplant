@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import { useLanguage } from '../contexts/LanguageContext';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -48,6 +49,7 @@ interface ProcessStatus {
 }
 
 const SummaryDashboard: React.FC = () => {
+  const { t } = useLanguage();
   const [kpiData, setKpiData] = useState<KPIData>({});
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [processStatus, setProcessStatus] = useState<ProcessStatus>({});
@@ -116,20 +118,26 @@ const SummaryDashboard: React.FC = () => {
     return new Date(timestamp).toLocaleString('ja-JP');
   };
 
-  const kpiLabels = {
-    OEE: '総合設備効率',
-    FPY: '直行率',
-    energy_intensity: 'エネルギー原単位',
-    yield_rate: '歩留まり率',
-    fsc_ratio: 'FSC認証材配合率',
-    production_rate: '生産レート'
+  const getKpiLabel = (key: string): string => {
+    const labelMap: { [key: string]: string } = {
+      'OEE': t('kpi.oee'),
+      'FPY': t('kpi.fpy'),
+      'energy_intensity': t('kpi.energy'),
+      'yield_rate': t('kpi.yield'),
+      'fsc_ratio': t('kpi.fsc'),
+      'production_rate': t('kpi.production')
+    };
+    return labelMap[key] || key;
   };
 
-  const processNames = {
-    P1: 'パルプ化',
-    P2: '調成',
-    P3: '抄紙',
-    P4: '仕上げ'
+  const getProcessName = (key: string): string => {
+    const processMap: { [key: string]: string } = {
+      'P1': t('process.p1'),
+      'P2': t('process.p2'),
+      'P3': t('process.p3'),
+      'P4': t('process.p4')
+    };
+    return processMap[key] || key;
   };
 
   // KPI チャートデータ - 棒グラフ形式
@@ -137,10 +145,10 @@ const SummaryDashboard: React.FC = () => {
   console.log('KPI Chart Data - kpiData values:', Object.values(kpiData));
   
   const kpiChartData = Object.keys(kpiData).length > 0 ? {
-    labels: Object.keys(kpiData).map(key => kpiLabels[key as keyof typeof kpiLabels] || key),
+    labels: Object.keys(kpiData).map(key => getKpiLabel(key)),
     datasets: [
       {
-        label: '実績値',
+        label: t('chart.actual'),
         data: Object.values(kpiData).map(kpi => kpi.value),
         backgroundColor: Object.values(kpiData).map((kpi) => {
           const status = getKPIStatus(kpi.achievement_rate);
@@ -157,7 +165,7 @@ const SummaryDashboard: React.FC = () => {
         borderWidth: 2
       },
       {
-        label: '目標値',
+        label: t('chart.target'),
         data: Object.values(kpiData).map(kpi => kpi.target),
         backgroundColor: 'rgba(255, 99, 132, 0.3)',
         borderColor: 'rgba(255, 99, 132, 1)',
@@ -168,7 +176,7 @@ const SummaryDashboard: React.FC = () => {
   } : {
     labels: ['データ読み込み中'],
     datasets: [{
-      label: '実績値',
+      label: t('chart.actual'),
       data: [0],
       backgroundColor: ['rgba(200, 200, 200, 0.6)'],
       borderColor: ['rgba(200, 200, 200, 1)'],
@@ -187,9 +195,9 @@ const SummaryDashboard: React.FC = () => {
   return (
     <div>
       <h1 style={{ marginBottom: '30px', color: '#1e3c72' }}>
-        📊 総合サマリーダッシュボード
+        {t('dashboard.title')}
         <span style={{ fontSize: '14px', color: '#666', marginLeft: '20px' }}>
-          最終更新: {new Date().toLocaleString('ja-JP')}
+          {t('dashboard.lastUpdate')}: {new Date().toLocaleString('ja-JP')}
         </span>
       </h1>
 
@@ -198,13 +206,13 @@ const SummaryDashboard: React.FC = () => {
         {Object.entries(kpiData).map(([key, kpi]) => (
           <div key={key} className="kpi-card">
             <div className="kpi-label">
-              {kpiLabels[key as keyof typeof kpiLabels] || key}
+              {getKpiLabel(key)}
             </div>
             <div className={`kpi-value ${getKPIStatus(kpi.achievement_rate)}`}>
               {kpi.value.toFixed(1)} <span style={{ fontSize: '1rem' }}>{kpi.unit}</span>
             </div>
             <div className="kpi-target">
-              目標: {kpi.target} {kpi.unit} ({kpi.achievement_rate.toFixed(1)}%)
+              {t('dashboard.target')}: {kpi.target} {kpi.unit} ({kpi.achievement_rate.toFixed(1)}%)
             </div>
           </div>
         ))}
@@ -213,7 +221,7 @@ const SummaryDashboard: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
         {/* KPIチャート */}
         <div className="card">
-          <h2>主要KPI実績 vs 目標値</h2>
+          <h2>{t('dashboard.kpiChart')}</h2>
           <div className="chart-container">
             <Bar 
               data={kpiChartData}
@@ -262,21 +270,29 @@ const SummaryDashboard: React.FC = () => {
 
         {/* 重要アラート */}
         <div className="card">
-          <h2>🚨 重要アラート</h2>
+          <h2>{t('dashboard.alerts')}</h2>
           <div className="alert-list">
             {alerts.length === 0 ? (
               <p style={{ color: '#4CAF50', textAlign: 'center', padding: '20px' }}>
-                ✅ 現在、重要なアラートはありません
+                {t('dashboard.noAlerts')}
               </p>
             ) : (
-              alerts.map((alert, index) => (
-                <div key={index} className={`alert-item ${alert.level}`}>
-                  <strong>{alert.machine_id}</strong>
-                  <span className="alert-time">{formatTimestamp(alert.timestamp)}</span>
-                  <br />
-                  <span>{alert.message}</span>
-                </div>
-              ))
+              alerts.map((alert, index) => {
+                const getAlertMessage = (message: string) => {
+                  if (message.includes('ワイヤー振動異常検知')) return t('alert.wireVibration');
+                  if (message.includes('蒸解釜温度上昇警告')) return t('alert.digestorTemp');
+                  return message;
+                };
+                
+                return (
+                  <div key={index} className={`alert-item ${alert.level}`}>
+                    <strong>{alert.machine_id}</strong>
+                    <span className="alert-time">{formatTimestamp(alert.timestamp)}</span>
+                    <br />
+                    <span>{getAlertMessage(alert.message)}</span>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
@@ -284,7 +300,7 @@ const SummaryDashboard: React.FC = () => {
 
       {/* 工程フロー図 */}
       <div className="card">
-        <h2>🏭 工程フロー状況</h2>
+        <h2>{t('dashboard.processFlow')}</h2>
         <div className="process-flow">
           {Object.entries(processStatus).map(([processCode, status], index) => (
             <React.Fragment key={processCode}>
@@ -292,11 +308,11 @@ const SummaryDashboard: React.FC = () => {
                 className={`process-step ${status.status}`}
                 onClick={() => window.location.href = `/process?code=${processCode}`}
               >
-                <h3>{processNames[processCode as keyof typeof processNames]}</h3>
+                <h3>{getProcessName(processCode)}</h3>
                 <p>{processCode}</p>
                 <div style={{ marginTop: '10px', fontSize: '12px' }}>
-                  稼働バッチ: {status.active_batches}<br />
-                  アラート: {status.recent_alerts}
+                  {t('dashboard.activeBatches')}: {status.active_batches}<br />
+                  {t('dashboard.alertCount')}: {status.recent_alerts}
                 </div>
                 <div style={{ 
                   marginTop: '8px', 
@@ -316,39 +332,39 @@ const SummaryDashboard: React.FC = () => {
         </div>
         
         <div style={{ marginTop: '15px', fontSize: '12px', color: '#666', textAlign: 'center' }}>
-          工程をクリックすると詳細監視画面へ移動します
+          {t('language') === 'ja' ? '工程をクリックすると詳細監視画面へ移動します' : 'Click on a process to view detailed monitoring'}
         </div>
       </div>
 
       {/* 生産状況サマリー */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
         <div className="card">
-          <h3>📈 本日の生産量</h3>
+          <h3>📈 {t('dashboard.productionToday')}</h3>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2a5298', textAlign: 'center' }}>
             1,128 <span style={{ fontSize: '1rem' }}>トン</span>
           </div>
           <p style={{ textAlign: 'center', color: '#666', marginTop: '10px' }}>
-            計画対比: 94.2%
+            {t('dashboard.planComparison')}: 94.2%
           </p>
         </div>
 
         <div className="card">
-          <h3>⚡ エネルギー使用量</h3>
+          <h3>⚡ {t('dashboard.energyUsage')}</h3>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ff9800', textAlign: 'center' }}>
             5,076 <span style={{ fontSize: '1rem' }}>GJ</span>
           </div>
           <p style={{ textAlign: 'center', color: '#666', marginTop: '10px' }}>
-            原単位: 4.5 GJ/t
+            {t('dashboard.energyIntensity')}: 4.5 GJ/t
           </p>
         </div>
 
         <div className="card">
-          <h3>🌱 環境貢献度</h3>
+          <h3>🌱 {t('dashboard.environmentalContrib')}</h3>
           <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4caf50', textAlign: 'center' }}>
             28.5 <span style={{ fontSize: '1rem' }}>%</span>
           </div>
           <p style={{ textAlign: 'center', color: '#666', marginTop: '10px' }}>
-            FSC認証材配合率
+            {t('dashboard.fscRatio')}
           </p>
         </div>
       </div>
