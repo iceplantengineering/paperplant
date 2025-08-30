@@ -210,101 +210,108 @@ const ProcessFlowMonitor: React.FC = () => {
           </div>
           
           <div className="modal-body">
+            {/* Status Overview Section */}
+            <div className="modal-status-overview">
+              <div className="status-indicator-large">
+                <div className={`status-circle ${data.status}`}></div>
+                <div className="status-info">
+                  <h3>{data.status === 'running' ? (t('language') === 'ja' ? '稼働中' : 'Running') : 
+                       data.status === 'alarm' ? (t('language') === 'ja' ? 'アラート' : 'Alert') : (t('language') === 'ja' ? '停止中' : 'Stopped')}</h3>
+                  <p>{t('processFlow.operator')}: {data.operator}</p>
+                </div>
+              </div>
+              <div className="quick-stats">
+                <div className="quick-stat">
+                  <span className="stat-value">{data.active_batches}</span>
+                  <span className="stat-label">{t('processFlow.activeBatches')}</span>
+                </div>
+                <div className="quick-stat">
+                  <span className={`stat-value ${data.recent_alerts > 0 ? 'critical' : 'good'}`}>{data.recent_alerts}</span>
+                  <span className="stat-label">{t('processFlow.todayAlerts')}</span>
+                </div>
+              </div>
+            </div>
+
             <div className="modal-metrics-grid">
-              <div className="modal-metric-card">
-                <h4 className="modal-metric-title">{t('processFlow.parameters')}</h4>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('language') === 'ja' ? '稼働状況' : 'Operating Status'}</span>
-                  <span className={`modal-metric-value ${data.status}`}>
-                    {data.status === 'running' ? (t('language') === 'ja' ? '稼働中' : 'Running') : 
-                     data.status === 'alarm' ? (t('language') === 'ja' ? 'アラート' : 'Alert') : (t('language') === 'ja' ? '停止中' : 'Stopped')}
-                  </span>
-                </div>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('processFlow.temperature')}</span>
-                  <span className="modal-metric-value">{data.temperature}°C</span>
-                </div>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('processFlow.pressure')}</span>
-                  <span className="modal-metric-value">{data.pressure} MPa</span>
-                </div>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('processFlow.flowRate')}</span>
-                  <span className="modal-metric-value">{data.flow_rate} L/min</span>
+              <div className="modal-metric-card primary">
+                <h4 className="modal-metric-title">
+                  <span className="metric-icon">⚙️</span>
+                  {t('processFlow.parameters')}
+                </h4>
+                <div className="metric-grid">
+                  <div className="modal-metric-item">
+                    <span className="modal-metric-label">{t('processFlow.temperature')}</span>
+                    <span className="modal-metric-value temperature">{data.temperature}°C</span>
+                  </div>
+                  <div className="modal-metric-item">
+                    <span className="modal-metric-label">{t('processFlow.pressure')}</span>
+                    <span className="modal-metric-value pressure">{data.pressure} MPa</span>
+                  </div>
+                  <div className="modal-metric-item">
+                    <span className="modal-metric-label">{t('processFlow.flowRate')}</span>
+                    <span className="modal-metric-value flow">{data.flow_rate} L/min</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="modal-metric-card">
-                <h4 className="modal-metric-title">{t('processFlow.qualityIndicators')}</h4>
-                {selectedProcess === 'P1' && (
-                  <>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('quality.param.kappa')}</span>
-                      <span className="modal-metric-value">{(data as any).kappa_number}</span>
+              <div className="modal-metric-card secondary">
+                <h4 className="modal-metric-title">
+                  <span className="metric-icon">📊</span>
+                  {t('processFlow.qualityIndicators')}
+                </h4>
+                <div className="quality-metrics">
+                  {selectedProcess === 'P1' && (
+                    <div className="quality-grid">
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).kappa_number}</div>
+                        <div className="quality-label">{t('quality.param.kappa')}</div>
+                      </div>
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).brightness}%</div>
+                        <div className="quality-label">{t('quality.param.brightness')}</div>
+                      </div>
                     </div>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('quality.param.brightness')}</span>
-                      <span className="modal-metric-value">{(data as any).brightness}%</span>
+                  )}
+                  {selectedProcess === 'P2' && (
+                    <div className="quality-grid">
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).consistency}%</div>
+                        <div className="quality-label">{t('quality.param.consistency')}</div>
+                      </div>
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).ph}</div>
+                        <div className="quality-label">{t('language') === 'ja' ? 'pH値' : 'pH Value'}</div>
+                      </div>
                     </div>
-                  </>
-                )}
-                {selectedProcess === 'P2' && (
-                  <>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('quality.param.consistency')}</span>
-                      <span className="modal-metric-value">{(data as any).consistency}%</span>
+                  )}
+                  {selectedProcess === 'P3' && (
+                    <div className="quality-grid">
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).basis_weight}</div>
+                        <div className="quality-label">{t('quality.param.basisWeight')} (g/m²)</div>
+                      </div>
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).moisture}%</div>
+                        <div className="quality-label">{t('quality.param.moisture')}</div>
+                      </div>
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).speed}</div>
+                        <div className="quality-label">{t('language') === 'ja' ? 'マシン速度' : 'Machine Speed'} (m/min)</div>
+                      </div>
                     </div>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('language') === 'ja' ? 'pH値' : 'pH Value'}</span>
-                      <span className="modal-metric-value">{(data as any).ph}</span>
+                  )}
+                  {selectedProcess === 'P4' && (
+                    <div className="quality-grid">
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).smoothness}</div>
+                        <div className="quality-label">{t('quality.param.smoothness')} (ml/min)</div>
+                      </div>
+                      <div className="quality-metric">
+                        <div className="quality-value">{(data as any).rolls}</div>
+                        <div className="quality-label">{t('language') === 'ja' ? '完成ロール数' : 'Finished Rolls'}</div>
+                      </div>
                     </div>
-                  </>
-                )}
-                {selectedProcess === 'P3' && (
-                  <>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('quality.param.basisWeight')}</span>
-                      <span className="modal-metric-value">{(data as any).basis_weight} g/m²</span>
-                    </div>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('quality.param.moisture')}</span>
-                      <span className="modal-metric-value">{(data as any).moisture}%</span>
-                    </div>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('language') === 'ja' ? 'マシン速度' : 'Machine Speed'}</span>
-                      <span className="modal-metric-value">{(data as any).speed} m/min</span>
-                    </div>
-                  </>
-                )}
-                {selectedProcess === 'P4' && (
-                  <>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('quality.param.smoothness')}</span>
-                      <span className="modal-metric-value">{(data as any).smoothness} ml/min</span>
-                    </div>
-                    <div className="modal-metric-item">
-                      <span className="modal-metric-label">{t('language') === 'ja' ? '完成ロール数' : 'Finished Rolls'}</span>
-                      <span className="modal-metric-value">{(data as any).rolls} {t('processFlow.units.rolls')}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="modal-metric-card">
-                <h4 className="modal-metric-title">{t('processFlow.operatorInfo')}</h4>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('processFlow.operator')}</span>
-                  <span className="modal-metric-value">{data.operator}</span>
-                </div>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('processFlow.activeBatches')}</span>
-                  <span className="modal-metric-value">{data.active_batches} {t('processFlow.units.pieces')}</span>
-                </div>
-                <div className="modal-metric-item">
-                  <span className="modal-metric-label">{t('processFlow.todayAlerts')}</span>
-                  <span className={`modal-metric-value ${data.recent_alerts > 0 ? 'critical' : 'good'}`}>
-                    {data.recent_alerts} {t('processFlow.units.cases')}
-                  </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -383,8 +390,8 @@ const ProcessFlowMonitor: React.FC = () => {
             <div className="raw-material-area">
               <div className="raw-material-container">
                 <div className="raw-material-header">
-                  <h3 className="raw-material-title">{t('language') === 'ja' ? '原料供給' : 'Raw Material Supply'}</h3>
-                  <p className="raw-material-subtitle">{t('language') === 'ja' ? 'Raw Materials' : '原料類'}</p>
+                  <h3 className="raw-material-title">{t('rawMaterial.supply')}</h3>
+                  <p className="raw-material-subtitle">{t('rawMaterial.types')}</p>
                 </div>
                 
                 <div className="silo-group">

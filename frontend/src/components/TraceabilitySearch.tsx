@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Scatter } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -35,6 +36,7 @@ interface TimelineEvent {
 }
 
 const TraceabilitySearch: React.FC = () => {
+  const { t } = useLanguage();
   const [searchCriteria, setSearchCriteria] = useState({
     productLotId: '',
     batchId: '',
@@ -162,10 +164,10 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime()).toISOString(),
         event_type: 'raw_material_arrival',
-        title: '原料入荷',
-        description: '北海道木材から木材チップが入荷',
+        title: t('process.rawMaterialArrival'),
+        description: `${t('supplier.hokkaido')}${t('material.arrival')}`,
         data: {
-          supplier: '北海道木材',
+          supplier: t('supplier.hokkaido'),
           weight: 25000,
           fsc_cert: 'FSC-123456'
         }
@@ -173,8 +175,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 22 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_start',
-        title: 'パルプ化工程開始',
-        description: '設備: DG-01, オペレーター: OP005',
+        title: t('process.pulping.start'),
+        description: `${t('equipment')}: DG-01, ${t('operator')}: OP005`,
         data: {
           machine_id: 'DG-01',
           operator_id: 'OP005',
@@ -185,8 +187,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 30 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_end',
-        title: 'パルプ化工程完了',
-        description: '出力量: 21,250.0kg',
+        title: t('process.pulping.end'),
+        description: `${t('output.quantity')}: 21,250.0kg`,
         data: {
           duration_hours: 8.0,
           output_kg: 21250
@@ -195,8 +197,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 32 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_start',
-        title: '調成工程開始',
-        description: '設備: MC-01, オペレーター: OP012',
+        title: t('process.stockPrep.start'),
+        description: `${t('equipment')}: MC-01, ${t('operator')}: OP012`,
         data: {
           machine_id: 'MC-01',
           operator_id: 'OP012',
@@ -207,8 +209,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 36 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_end',
-        title: '調成工程完了',
-        description: '出力量: 20,825.0kg',
+        title: t('process.stockPrep.end'),
+        description: `${t('output.quantity')}: 20,825.0kg`,
         data: {
           duration_hours: 4.0,
           output_kg: 20825
@@ -217,8 +219,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 38 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_start',
-        title: '抄紙工程開始',
-        description: '設備: PM-01, オペレーター: OP007',
+        title: t('process.paperMaking.start'),
+        description: `${t('equipment')}: PM-01, ${t('operator')}: OP007`,
         data: {
           machine_id: 'PM-01',
           operator_id: 'OP007',
@@ -229,8 +231,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 50 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_end',
-        title: '抄紙工程完了',
-        description: '出力量: 19,575.0kg',
+        title: t('process.paperMaking.end'),
+        description: `${t('output.quantity')}: 19,575.0kg`,
         data: {
           duration_hours: 12.0,
           output_kg: 19575
@@ -239,8 +241,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 52 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_start',
-        title: '仕上げ工程開始',
-        description: '設備: RW-01, オペレーター: OP018',
+        title: t('process.finishing.start'),
+        description: `${t('equipment')}: RW-01, ${t('operator')}: OP018`,
         data: {
           machine_id: 'RW-01',
           operator_id: 'OP018',
@@ -251,8 +253,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 58 * 60 * 60 * 1000).toISOString(),
         event_type: 'process_end',
-        title: '仕上げ工程完了',
-        description: '出力量: 19,380.0kg',
+        title: t('process.finishing.end'),
+        description: `${t('output.quantity')}: 19,380.0kg`,
         data: {
           duration_hours: 6.0,
           output_kg: 19380
@@ -261,8 +263,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 60 * 60 * 60 * 1000).toISOString(),
         event_type: 'product_completion',
-        title: '製品完成',
-        description: '製品: NP-80',
+        title: t('process.productCompletion'),
+        description: `${t('product')}: NP-80`,
         data: {
           product_code: 'NP-80',
           quantity_kg: 1250.5,
@@ -272,8 +274,8 @@ const TraceabilitySearch: React.FC = () => {
       {
         timestamp: new Date(baseTime.getTime() + 84 * 60 * 60 * 1000).toISOString(),
         event_type: 'shipment',
-        title: '出荷',
-        description: '出荷先: Customer-05',
+        title: t('process.shipment'),
+        description: `${t('destination')}: Customer-05`,
         data: {
           destination: 'Customer-05',
           quantity_kg: 1250.5
@@ -338,7 +340,7 @@ const TraceabilitySearch: React.FC = () => {
 
   const correlationChartData = {
     datasets: [{
-      label: '坪量 vs 引張強度',
+      label: `${t('quality.param.basisWeight')} vs ${t('quality.param.tensile')}`,
       data: generateCorrelationData(),
       backgroundColor: 'rgba(42, 82, 152, 0.6)',
       borderColor: 'rgba(42, 82, 152, 1)',
@@ -353,16 +355,16 @@ const TraceabilitySearch: React.FC = () => {
   return (
     <div>
       <h1 style={{ marginBottom: '30px', color: '#1e3c72' }}>
-        🔍 トレーサビリティ検索・分析
+        🔍 {t('trace.searchAnalysis')}
       </h1>
 
       {/* タブナビゲーション */}
       <div style={{ marginBottom: '20px', borderBottom: '2px solid #eee' }}>
         <div style={{ display: 'flex', gap: '0' }}>
           {[
-            { key: 'search', label: '🔍 検索', icon: '🔍' },
-            { key: 'journey', label: '📈 ジャーニー', icon: '📈' },
-            { key: 'analysis', label: '📊 相関分析', icon: '📊' }
+            { key: 'search', label: `🔍 ${t('trace.search')}`, icon: '🔍' },
+            { key: 'journey', label: `📈 ${t('trace.journey')}`, icon: '📈' },
+            { key: 'analysis', label: `📊 ${t('trace.analysis')}`, icon: '📊' }
           ].map(tab => (
             <button
               key={tab.key}
@@ -388,40 +390,40 @@ const TraceabilitySearch: React.FC = () => {
         <>
           {/* 検索フォーム */}
           <div className="card">
-            <h2>🔍 トレーサビリティ検索</h2>
+            <h2>🔍 {t('trace.searchTitle')}</h2>
             <div className="search-form">
               <div className="form-group">
-                <label>製品ロットID</label>
+                <label>{t('trace.productLot')}</label>
                 <input
                   type="text"
-                  placeholder="例: FPL-0123"
+                  placeholder={t('trace.productLotExample')}
                   value={searchCriteria.productLotId}
                   onChange={(e) => setSearchCriteria({...searchCriteria, productLotId: e.target.value})}
                 />
               </div>
               
               <div className="form-group">
-                <label>生産バッチID</label>
+                <label>{t('trace.batchId')}</label>
                 <input
                   type="text"
-                  placeholder="例: PB-0456"
+                  placeholder={t('trace.batchExample')}
                   value={searchCriteria.batchId}
                   onChange={(e) => setSearchCriteria({...searchCriteria, batchId: e.target.value})}
                 />
               </div>
               
               <div className="form-group">
-                <label>原料ロットID</label>
+                <label>{t('trace.rawMaterialLot')}</label>
                 <input
                   type="text"
-                  placeholder="例: RML-0089"
+                  placeholder={t('trace.rawMaterialExample')}
                   value={searchCriteria.rawMaterialLotId}
                   onChange={(e) => setSearchCriteria({...searchCriteria, rawMaterialLotId: e.target.value})}
                 />
               </div>
               
               <div className="form-group">
-                <label>開始日</label>
+                <label>{t('trace.startDate')}</label>
                 <input
                   type="date"
                   value={searchCriteria.startDate}
@@ -430,7 +432,7 @@ const TraceabilitySearch: React.FC = () => {
               </div>
               
               <div className="form-group">
-                <label>終了日</label>
+                <label>{t('trace.endDate')}</label>
                 <input
                   type="date"
                   value={searchCriteria.endDate}
@@ -441,7 +443,7 @@ const TraceabilitySearch: React.FC = () => {
               <div className="form-group">
                 <label>&nbsp;</label>
                 <button className="btn btn-primary" onClick={handleSearch}>
-                  🔍 検索実行
+                  🔍 {t('trace.executeSearch')}
                 </button>
               </div>
             </div>
@@ -456,7 +458,7 @@ const TraceabilitySearch: React.FC = () => {
           {/* 検索結果 */}
           {searchResults.length > 0 && (
             <div className="card">
-              <h2>📋 検索結果</h2>
+              <h2>📋 {t('trace.searchResults')}</h2>
               {searchResults.map((result, index) => (
                 <div key={index} style={{ 
                   marginBottom: '20px', 
@@ -466,9 +468,9 @@ const TraceabilitySearch: React.FC = () => {
                   backgroundColor: '#f9f9f9' 
                 }}>
                   <h3>
-                    {result.type === 'product' && '📋 製品ロット'}
-                    {result.type === 'batch' && '⚙️ 生産バッチ'}
-                    {result.type === 'raw_material' && '📦 原料ロット'}
+                    {result.type === 'product' && `📋 ${t('trace.productLotResult')}`}
+                    {result.type === 'batch' && `⚙️ ${t('trace.productionBatch')}`}
+                    {result.type === 'raw_material' && `📦 ${t('trace.rawMaterialLot')}`}
                   </h3>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
@@ -490,7 +492,7 @@ const TraceabilitySearch: React.FC = () => {
                         setActiveTab('journey');
                       }}
                     >
-                      📈 ジャーニーを表示
+                      📈 {t('trace.showJourneyButton')}
                     </button>
                   )}
                 </div>
@@ -504,12 +506,12 @@ const TraceabilitySearch: React.FC = () => {
         <>
           {/* ロットジャーニー・タイムライン */}
           <div className="card">
-            <h2>📈 ロット生産ジャーニー</h2>
+            <h2>📈 {t('trace.lotJourney')}</h2>
             
             {timeline.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
-                <p style={{ fontSize: '18px', marginBottom: '20px' }}>📋 サンプルデータが表示されています</p>
-                <p>製品ロット FPL-0123 の生産ジャーニーをご覧ください。</p>
+                <p style={{ fontSize: '18px', marginBottom: '20px' }}>📋 {t('trace.sampleDataShown')}</p>
+                <p>{t('trace.sampleDescription')}製品ロット FPL-0123</p>
                 <button 
                   className="btn btn-primary"
                   style={{ marginTop: '20px' }}
@@ -518,13 +520,13 @@ const TraceabilitySearch: React.FC = () => {
                     setTimeline(timelineData);
                   }}
                 >
-                  🔄 ジャーニーデータを読み込み
+                  🔄 {t('trace.loadJourneyData')}
                 </button>
               </div>
             ) : (
               <>
                 <p style={{ color: '#666', marginBottom: '20px' }}>
-                  ロット FPL-0123 の製造工程を時系列で表示しています（{timeline.length}イベント）
+                  ロット FPL-0123 {t('trace.processTimeline')}（{timeline.length}{t('trace.eventsCount')}）
                 </p>
               </>
             )}
@@ -545,19 +547,19 @@ const TraceabilitySearch: React.FC = () => {
                       <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2a5298' }}>
                         {calculateYield()!.initial.toLocaleString()} kg
                       </div>
-                      <div style={{ fontSize: '14px', color: '#666' }}>原料投入量</div>
+                      <div style={{ fontSize: '14px', color: '#666' }}>{t('trace.initialQuantity')}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#4caf50' }}>
                         {calculateYield()!.final.toLocaleString()} kg
                       </div>
-                      <div style={{ fontSize: '14px', color: '#666' }}>製品完成量</div>
+                      <div style={{ fontSize: '14px', color: '#666' }}>{t('trace.finalQuantity')}</div>
                     </div>
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#ff9800' }}>
                         {calculateYield()!.yield.toFixed(1)}%
                       </div>
-                      <div style={{ fontSize: '14px', color: '#666' }}>総合歩留まり</div>
+                      <div style={{ fontSize: '14px', color: '#666' }}>{t('trace.overallYield')}</div>
                     </div>
                   </div>
                 )}
@@ -634,10 +636,9 @@ const TraceabilitySearch: React.FC = () => {
         <>
           {/* 相関分析 */}
           <div className="card">
-            <h2>📊 品質パラメータ相関分析</h2>
+            <h2>📊 {t('trace.qualityCorrelation')}</h2>
             <p style={{ color: '#666', marginBottom: '20px' }}>
-              品質改善のために、製品特性間の関係性を分析します。
-              下記は坪量と引張強度の相関を示すデモンストレーションです。
+              {t('trace.qualityImprovementDesc')}
             </p>
             
             <div className="chart-container">
@@ -649,16 +650,16 @@ const TraceabilitySearch: React.FC = () => {
                   plugins: {
                     title: {
                       display: true,
-                      text: '坪量と引張強度の相関分析'
+                      text: t('trace.correlationChart')
                     },
                     tooltip: {
                       callbacks: {
                         label: function(context: any) {
                           const point = context.raw;
                           return [
-                            `坪量: ${point.x.toFixed(1)} g/m²`,
-                            `引張強度: ${point.y.toFixed(1)} N*m/g`,
-                            `水分率: ${point.moisture.toFixed(1)} %`
+                            `${t('quality.param.basisWeight')}: ${point.x.toFixed(1)} g/m²`,
+                            `${t('quality.param.tensile')}: ${point.y.toFixed(1)} N*m/g`,
+                            `${t('quality.param.moisture')}: ${point.moisture.toFixed(1)} %`
                           ];
                         }
                       }
@@ -668,13 +669,13 @@ const TraceabilitySearch: React.FC = () => {
                     x: {
                       title: {
                         display: true,
-                        text: '坪量 (g/m²)'
+                        text: `${t('quality.param.basisWeight')} (g/m²)`
                       }
                     },
                     y: {
                       title: {
                         display: true,
-                        text: '引張強度 (N*m/g)'
+                        text: `${t('quality.param.tensile')} (N*m/g)`
                       }
                     }
                   }
@@ -683,41 +684,41 @@ const TraceabilitySearch: React.FC = () => {
             </div>
             
             <div style={{ marginTop: '20px', fontSize: '14px', color: '#666' }}>
-              <p><strong>分析結果:</strong></p>
-              <p>• 坪量と引張強度の間に正の相関が見られます</p>
-              <p>• 坪量が高いほど引張強度も向上する傾向があります</p>
-              <p>• この関係性を活用して製品仕様を最適化できます</p>
+              <p><strong>{t('trace.correlationResults')}</strong></p>
+              <p>• {t('trace.correlationResult1')}</p>
+              <p>• {t('trace.correlationResult2')}</p>
+              <p>• {t('trace.correlationResult3')}</p>
             </div>
           </div>
 
           {/* 品質統計サマリー */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
             <div className="card">
-              <h3>📈 品質傾向</h3>
+              <h3>📈 {t('trace.qualityTrends')}</h3>
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>品質項目</th>
-                    <th>平均値</th>
-                    <th>標準偏差</th>
+                    <th>{t('trace.qualityItem')}</th>
+                    <th>{t('trace.average')}</th>
+                    <th>{t('trace.standardDev')}</th>
                     <th>Cpk</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>坪量</td>
+                    <td>{t('quality.param.basisWeight')}</td>
                     <td>80.1 g/m²</td>
                     <td>0.82</td>
                     <td>1.22</td>
                   </tr>
                   <tr>
-                    <td>水分率</td>
+                    <td>{t('quality.param.moisture')}</td>
                     <td>5.0 %</td>
                     <td>0.15</td>
                     <td>1.67</td>
                   </tr>
                   <tr>
-                    <td>引張強度</td>
+                    <td>{t('quality.param.tensile')}</td>
                     <td>121.5 N*m/g</td>
                     <td>4.2</td>
                     <td>1.19</td>
@@ -727,22 +728,22 @@ const TraceabilitySearch: React.FC = () => {
             </div>
 
             <div className="card">
-              <h3>🎯 品質目標達成度</h3>
+              <h3>🎯 {t('trace.qualityAchievement')}</h3>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '3rem', color: '#4caf50', fontWeight: 'bold' }}>
                   96.2%
                 </div>
-                <p style={{ color: '#666' }}>総合品質達成率</p>
+                <p style={{ color: '#666' }}>{t('trace.overallQualityRate')}</p>
                 
                 <div style={{ marginTop: '20px' }}>
                   <div style={{ marginBottom: '10px' }}>
-                    坪量規格内率: <strong style={{ color: '#4caf50' }}>98.5%</strong>
+                    {t('trace.basisWeightSpec')}: <strong style={{ color: '#4caf50' }}>98.5%</strong>
                   </div>
                   <div style={{ marginBottom: '10px' }}>
-                    水分率規格内率: <strong style={{ color: '#4caf50' }}>99.1%</strong>
+                    {t('trace.moistureSpec')}: <strong style={{ color: '#4caf50' }}>99.1%</strong>
                   </div>
                   <div style={{ marginBottom: '10px' }}>
-                    強度規格内率: <strong style={{ color: '#ff9800' }}>91.2%</strong>
+                    {t('trace.strengthSpec')}: <strong style={{ color: '#ff9800' }}>91.2%</strong>
                   </div>
                 </div>
               </div>

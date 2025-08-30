@@ -582,17 +582,256 @@
 }
 
 .modal-body {
-  padding: 30px;
-  max-height: 60vh;
+  padding: 0;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
+/* ===== 新しいモーダルレイアウト ===== */
+.modal-status-overview {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 25px 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-indicator-large {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.status-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: pulse 2s infinite;
+}
+
+.status-circle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.status-circle.running {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+}
+
+.status-circle.alarm {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+  animation: pulse-alarm 1s infinite;
+}
+
+.status-circle.stopped {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  box-shadow: 0 8px 20px rgba(149, 165, 166, 0.3);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes pulse-alarm {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.status-info h3 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.status-info p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.quick-stats {
+  display: flex;
+  gap: 30px;
+}
+
+.quick-stat {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.stat-value.good {
+  color: #27ae60;
+}
+
+.stat-value.critical {
+  color: #e74c3c;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* メトリクスグリッドの更新 */
 .modal-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  padding: 30px;
+}
+
+.modal-metric-card.primary {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+}
+
+.modal-metric-card.secondary {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  border: none;
+}
+
+.modal-metric-card.primary .modal-metric-title,
+.modal-metric-card.secondary .modal-metric-title {
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.metric-icon {
+  font-size: 20px;
+}
+
+.metric-grid {
+  display: grid;
+  gap: 15px;
+}
+
+.modal-metric-card.primary .modal-metric-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-metric-card.primary .modal-metric-label,
+.modal-metric-card.secondary .modal-metric-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+}
+
+.modal-metric-card.primary .modal-metric-value,
+.modal-metric-card.secondary .modal-metric-value {
+  color: white;
+  font-weight: 600;
+}
+
+.modal-metric-value.temperature {
+  color: #ff6b6b;
+}
+
+.modal-metric-value.pressure {
+  color: #4ecdc4;
+}
+
+.modal-metric-value.flow {
+  color: #45b7d1;
+}
+
+/* 品質メトリクスの新しいレイアウト */
+.quality-metrics {
+  padding: 10px 0;
+}
+
+.quality-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 20px;
 }
 
+.quality-metric {
+  text-align: center;
+  padding: 15px 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.quality-metric:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.quality-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: white;
+}
+
+.quality-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.3;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-height: 90vh;
+  }
+  
+  .modal-status-overview {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .quick-stats {
+    gap: 20px;
+  }
+  
+  .modal-metrics-grid {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .quality-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 基本的なメトリクスカードスタイル（デフォルト） */
 .modal-metric-card {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 16px;
